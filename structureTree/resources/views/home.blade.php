@@ -15,7 +15,9 @@
                     @endif
 
                     {{ __('You are logged in!') }}
+                    <a href="{{ route('mainPage') }}">{{ __('Redirect to category page') }}</a>
                 </div>
+
             </div>
         </div>
     </div>
