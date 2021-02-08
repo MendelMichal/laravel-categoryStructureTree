@@ -23,7 +23,7 @@ class CreateCategoriesTable extends Migration
         });
 
 
-        DB::unprepared('DELIMITER $$ CREATE PROCEDURE updateNodeIndex( IN categoryId INT(10), IN parentId INT(11),
+        DB::unprepared('DELIMITER $$ CREATE PROCEDURE updateNodeIndex( IN categoryId INT(10), IN parentId INT(11), IN currentParent INT(11),
                 IN nodeIndex INT(11), IN currentIndex INT(11), IN isNewNode BOOLEAN, IN isDeletionOperation BOOLEAN)
             BEGIN
                 UPDATE
@@ -34,6 +34,14 @@ class CreateCategoriesTable extends Migration
                         WHEN isNewNode = true AND parent_id = parentId AND node_index >= nodeIndex AND id != categoryId THEN node_index + 1
                         WHEN isNewNode = false AND parent_id = parentId AND node_index < currentIndex AND node_index >= nodeIndex THEN node_index + 1
                         WHEN isNewNode = false AND parent_id = parentId AND node_index > currentIndex AND node_index <= nodeIndex THEN node_index - 1
+                        ELSE node_index
+                        END;
+
+                UPDATE
+                    categories
+                SET
+                    node_index = CASE
+                        WHEN isNewNode = true AND parent_id = currentParent AND node_index > currentIndex THEN node_index - 1
                         ELSE node_index
                         END;
             END'

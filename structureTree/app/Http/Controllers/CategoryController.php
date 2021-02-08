@@ -85,7 +85,8 @@ class CategoryController extends Controller
         CategoryValidator::editCategoryValidation($categoryHelper, $category, $data, $isChangingNode);
 
         /* Execute stored procedure for updating node_indexes and update record */
-        $category->executeUpdateIndexProc($category->id, $data['parent_id'], $data['node_index'], $category->node_index, $isChangingNode, 0);
+        $category->executeUpdateIndexProc($category->id, $data['parent_id'], $category->parent_id,
+            $data['node_index'], $category->node_index, $isChangingNode, 0);
         $category->update($data);
 
         return back()->with('edit-success', 'Category has been modified successfully');
@@ -112,7 +113,7 @@ class CategoryController extends Controller
         $categoryDeleteIds = $categoryHelper->getChildSubcategories($category->id, [$category->id]);
 
         /* Execute stored procedure for updating node_indexes and delete records */
-        $category->executeUpdateIndexProc($category->id, $category->parent_id, 0, $category->node_index, 0, 1);
+        $category->executeUpdateIndexProc($category->id, 0, $category->parent_id, 0, $category->node_index, 0, 1);
         Category::whereIn('id', $categoryDeleteIds)->delete();
 
         return back()->with('delete-success', 'Category has been deleted successfully');

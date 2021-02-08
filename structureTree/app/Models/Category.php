@@ -35,14 +35,16 @@ class Category extends Model
      * Stored procedure to update node index in database
      * @param $categoryId
      * @param $parentId
+     * @param $currentParent
      * @param $nodeIndex
      * @param $currentIndex
      * @param int $isNewNode
      * @param int $isDeletionOperation
      */
-    public function executeUpdateIndexProc($categoryId, $parentId, $nodeIndex, $currentIndex, $isNewNode = 0, $isDeletionOperation = 0)
+    public function executeUpdateIndexProc($categoryId, $parentId, $currentParent, $nodeIndex,
+                                           $currentIndex, $isNewNode = 0, $isDeletionOperation = 0)
     {
-        DB::select('call updateNodeIndex('.$categoryId.', '.$parentId.', '.$nodeIndex.',
+        DB::select('call updateNodeIndex('.$categoryId.', '.$parentId.', '.$currentParent.', '.$nodeIndex.',
          '.$currentIndex.', '.$isNewNode.', '.$isDeletionOperation.')');
     }
 }
