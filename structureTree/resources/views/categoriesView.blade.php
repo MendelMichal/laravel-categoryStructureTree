@@ -12,13 +12,15 @@
 
                 </div>
 
-                <div class="card categoryDeleteDiv">
-                    <div class="card-header">{{ __('Category Delete') }}</div>
+                @auth
+                    <div class="card categoryDeleteDiv">
+                        <div class="card-header">{{ __('Category Delete') }}</div>
 
-                    <div class="card-body">
-                        @include('partials.categoryActions.delete', ['allCategories' => $allCategories])
+                        <div class="card-body">
+                            @include('partials.categoryActions.delete', ['allCategories' => $allCategories])
+                        </div>
                     </div>
-                </div>
+                @endauth
 
             </div>
 
