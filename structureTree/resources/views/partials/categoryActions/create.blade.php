@@ -11,20 +11,20 @@
         </div>
     @endif
 
-    {{--        Select the name of the new category       --}}
+    <!--       Select the name of the new category       -->
     <div class="form-group @if($errors->add->first('name')) has-error @endif">
         <label for="name">{{ __('Name') }}</label>
         <input type="text" name="name" class="form-control"/>
 
         @if($errorMsg = $errors->add->first('name'))
-            <span class="text-danger">{{ $errorMsg }}</span>
+            <div class="alert alert-danger" role="alert">{{ $errorMsg }}</div>
         @endif
     </div>
 
-    {{--        Choosing overcategory       --}}
+    <!--       Choosing overcategory       -->
     <div class="form-group @if($errors->add->first('parent_id')) has-error @endif">
         <label for="parent_id">{{ __('Category') }}:</label>
-        <select class="form-control" name="parent_id">
+        <select class="form-control" name="parent_id" id="addParentId">
             <option value="0">{{ __('Main') }}</option>
             @foreach ($allCategories as $id => $category)
                 <option value="{{ $id }}" {{ old('parent_id') ? 'selected' : '' }}>
@@ -34,7 +34,7 @@
         </select>
 
         @if($errorMsg = $errors->add->first('parent_id'))
-            <span class="text-danger">{{ $errorMsg }}</span>
+            <div class="alert alert-danger" role="alert">{{ $errorMsg }}</div>
         @endif
     </div>
 

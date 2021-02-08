@@ -1,17 +1,26 @@
 /* ------------------ Tree ------------------ */
+.tree {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
 .tree, .tree ul {
     margin:0;
     padding:0;
     list-style:none;
     margin-left:10px;
 }
+
 .tree ul {
     margin-left:1em;
     position:relative
 }
+
 .tree ul ul {
     margin-left:.5em
 }
+
 .tree ul:before {
     content:'';
     display:block;
@@ -22,6 +31,7 @@
     left:0;
     border-left:1px solid
 }
+
 .tree li {
     margin:0;
     padding:0 1em;
@@ -30,6 +40,7 @@
     font-weight:700;
     position:relative
 }
+
 .tree ul li:before {
     content:'';
     display:block;
@@ -41,6 +52,7 @@
     top:1em;
     left:0
 }
+
 .tree ul li:last-child:before {
     background:#fff;
     height:auto;
@@ -87,4 +99,26 @@
 
 .categoryAction {
     margin: 30px 0px;
+}
+
+.categoryDeleteDiv {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.selectedCategory {
+    border: 2px solid;
+    border-radius: 12px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+select option:disabled {
+    background-color: #F0F0F0;
+}
+
+.alert-danger {
+    margin-top: 10px;
+    text-align: center;
 }

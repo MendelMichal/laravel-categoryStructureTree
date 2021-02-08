@@ -25,3 +25,6 @@ Route::get('/add-category', [App\Http\Controllers\CategoryController::class, 'li
 
 Route::post('/edit-category', [App\Http\Controllers\CategoryController::class, 'editCategory'])->name('editCategories');
 Route::get('/edit-category', [App\Http\Controllers\CategoryController::class, 'listCategories']);
+
+Route::post('/delete-category', [App\Http\Controllers\CategoryController::class, 'deleteCategory'])->name('deleteCategories');
+Route::get('/delete-category', [App\Http\Controllers\CategoryController::class, 'listCategories']);

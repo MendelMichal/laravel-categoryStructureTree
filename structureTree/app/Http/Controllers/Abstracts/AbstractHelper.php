@@ -14,14 +14,15 @@ abstract class AbstractHelper
     /**
      * @return mixed
      */
-    abstract public function getList();
+    abstract static public function getList();
 
     /**
      * @param string $id
      * @param string $errorBag
+     * @param string $fieldName
      * @return mixed
      */
-    abstract public function getItem(string $id, string $errorBag);
+    abstract public function getItem(string $id, string $fieldName);
 
     /**
      * Secure from special chars (attacks)
@@ -34,14 +35,14 @@ abstract class AbstractHelper
     }
 
     /**
+     * Validator with empty data and rules
      * @param string $field
      * @param string $message
      * @param string $errorBag
      * @throws ValidationException
      */
-    public function throwCustomErrorBag(string $field, string $message, string $errorBag)
+    protected function throwCustomErrorBag(string $field, string $message, string $errorBag)
     {
-        /* Validator with empty data and rules */
         $validator = Validator::make([], []);
         $validator->errors()->add($field, $message);
 

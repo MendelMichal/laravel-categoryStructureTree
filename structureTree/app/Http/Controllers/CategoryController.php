@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\CategoryHelper;
+use App\Http\Validators\CategoryValidator;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -29,7 +30,7 @@ class CategoryController extends Controller
      */
     public function listCategories()
     {
-        return view('categoriesView', (new CategoryHelper)->getList());
+        return view('categoriesView', CategoryHelper::getList());
     }
 
     /**
@@ -47,8 +48,11 @@ class CategoryController extends Controller
 
         $data = $this->processData($errorBag, $validationRules, $request);
 
-        $categoryHelper = new CategoryHelper();
-        $categoryHelper->checkUniqueInNode($data['name'], $data['parent_id'], $errorBag);
+        $categoryHelper = new CategoryHelper($errorBag);
+        $categoryHelper->checkUniqueInNode($data['name'], $data['parent_id']);
+
+        /* Adding new category with last index by default */
+        $data['node_index'] = $categoryHelper->getDefaultNodeIndex($data['parent_id']);
 
         Category::create($data);
 
@@ -64,20 +68,54 @@ class CategoryController extends Controller
     {
         $errorBag = 'edit';
         $validationRules = [
+            'id' => ['required'],
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => ['required'],
+            'node_index' => ['required']
         ];
 
         $data = $this->processData($errorBag, $validationRules, $request);
 
         /* Getting category and performing additional validations */
-        $categoryHelper = new CategoryHelper();
-        $category = $categoryHelper->getItem($data['id'], $errorBag);
-        $categoryHelper->checkUniqueInNode($data['name'], $data['parent_id'], $errorBag);
+        $categoryHelper = new CategoryHelper($errorBag);
+        $category = $categoryHelper->getItem($data['id'], 'id');
+        $isChangingNode = ($category->parent_id != $data['parent_id']) ? 1 : 0;
 
+        /* Performing special validations */
+        CategoryValidator::editCategoryValidation($categoryHelper, $category, $data, $isChangingNode);
+
+        /* Execute stored procedure for updating node_indexes and update record */
+        $category->executeUpdateIndexProc($category->id, $data['parent_id'], $data['node_index'], $category->node_index, $isChangingNode, 0);
         $category->update($data);
 
         return back()->with('edit-success', 'Category has been modified successfully');
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws ValidationException
+     */
+    public function deleteCategory(Request $request)
+    {
+        $errorBag = 'delete';
+        $validationRules = [
+            'id' => ['required'],
+        ];
+
+        $data = $this->processData($errorBag, $validationRules, $request);
+        $categoryHelper = new CategoryHelper($errorBag);
+        $category = $categoryHelper->getItem($data['id'], 'id');
+
+        /* Performing special validations and getting category family ID list */
+        CategoryValidator::deleteCategoryValidation($categoryHelper, $category, $data);
+        $categoryDeleteIds = $categoryHelper->getChildSubcategories($category->id, [$category->id]);
+
+        /* Execute stored procedure for updating node_indexes and delete records */
+        $category->executeUpdateIndexProc($category->id, $category->parent_id, 0, $category->node_index, 0, 1);
+        Category::whereIn('id', $categoryDeleteIds)->delete();
+
+        return back()->with('delete-success', 'Category has been deleted successfully');
     }
 
     /**
@@ -89,7 +127,7 @@ class CategoryController extends Controller
      * @return array
      * @throws ValidationException
      */
-    private function processData($bagName, array $validator, Request $request)
+    private function processData(string $bagName, array $validator, Request $request)
     {
         if(!empty($validator))
         {
@@ -98,7 +136,7 @@ class CategoryController extends Controller
 
         /* Additional name input validation */
         $requestVariables = $request->all();
-        if($requestVariables['name'])
+        if(isset($requestVariables['name']))
         {
             $requestVariables['name'] = (new CategoryHelper())->secureValue($requestVariables['name']);
         }

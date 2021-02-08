@@ -18,6 +18,6 @@ class MainPageController extends Controller
      */
     public function index()
     {
-        return view('categoriesView', (new CategoryHelper())->getList());
+        return view('categoriesView', CategoryHelper::getList());
     }
 }
