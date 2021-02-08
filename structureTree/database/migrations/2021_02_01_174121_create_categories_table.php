@@ -30,18 +30,11 @@ class CreateCategoriesTable extends Migration
                     categories
                 SET
                     node_index = CASE
-                        WHEN isDeletionOperation = true AND parent_id = parentId AND node_index > currentIndex THEN node_index - 1
-                        WHEN isNewNode = true AND parent_id = parentId AND node_index >= nodeIndex AND id != categoryId THEN node_index + 1
-                        WHEN isNewNode = false AND parent_id = parentId AND node_index < currentIndex AND node_index >= nodeIndex THEN node_index + 1
-                        WHEN isNewNode = false AND parent_id = parentId AND node_index > currentIndex AND node_index <= nodeIndex THEN node_index - 1
-                        ELSE node_index
-                        END;
-
-                UPDATE
-                    categories
-                SET
-                    node_index = CASE
+                        WHEN isDeletionOperation = true AND parent_id = currentParent AND node_index > currentIndex THEN node_index - 1
                         WHEN isNewNode = true AND parent_id = currentParent AND node_index > currentIndex THEN node_index - 1
+                        WHEN isNewNode = true AND parent_id = parentId AND node_index >= nodeIndex AND id != categoryId THEN node_index + 1
+                        WHEN isNewNode = false AND isDeletionOperation = false AND parent_id = parentId AND node_index < currentIndex AND node_index >= nodeIndex THEN node_index + 1
+                        WHEN isNewNode = false AND isDeletionOperation = false AND parent_id = parentId AND node_index > currentIndex AND node_index <= nodeIndex THEN node_index - 1
                         ELSE node_index
                         END;
             END'
