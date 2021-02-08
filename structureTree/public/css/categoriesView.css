@@ -1,0 +1,124 @@
+/* ------------------ Tree ------------------ */
+.tree {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.tree, .tree ul {
+    margin:0;
+    padding:0;
+    list-style:none;
+    margin-left:10px;
+}
+
+.tree ul {
+    margin-left:1em;
+    position:relative
+}
+
+.tree ul ul {
+    margin-left:.5em
+}
+
+.tree ul:before {
+    content:'';
+    display:block;
+    width:0;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    border-left:1px solid
+}
+
+.tree li {
+    margin:0;
+    padding:0 1em;
+    line-height:2em;
+    color:#369;
+    font-weight:700;
+    position:relative
+}
+
+.tree ul li:before {
+    content:'';
+    display:block;
+    width:10px;
+    height:0;
+    border-top:1px solid;
+    margin-top:-1px;
+    position:absolute;
+    top:1em;
+    left:0
+}
+
+.tree ul li:last-child:before {
+    background:#fff;
+    height:auto;
+    top:1em;
+    bottom:0
+}
+
+/* ------------------ Loader ------------------ */
+.loader {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 120px;
+    height: 120px;
+    margin: -76px 0 0 -76px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.blur {
+    -webkit-filter: blur(8px);
+    -moz-filter: blur(8px);
+    -ms-filter: blur(8px);
+    -o-filter: blur(8px);
+    filter: blur(8px);
+}
+
+/* ------------------ Other Styles ------------------ */
+.categoryTitle {
+    display: inline-block;
+    margin: 15px;
+    vertical-align:middle;
+}
+
+.categoryAction {
+    margin: 30px 0px;
+}
+
+.categoryDeleteDiv {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.selectedCategory {
+    border: 2px solid;
+    border-radius: 12px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+select option:disabled {
+    background-color: #F0F0F0;
+}
+
+.alert-danger {
+    margin-top: 10px;
+    text-align: center;
+}
